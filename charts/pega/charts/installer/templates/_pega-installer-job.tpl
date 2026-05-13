@@ -45,8 +45,6 @@ spec:
       serviceAccountName: {{ .root.Values.serviceAccountName }}
 {{- end }}
       volumes:
-{{- include "jdbcLibVolume" .root | indent 6 }}
-{{- include "downloadScriptVolume" (merge .root (dict "chartType" "installer")) | indent 6 }}
 {{- if .root.Values.installerMountVolumeClaimName }}
       - name: {{ template "pegaInstallerMountVolume" }}
         persistentVolumeClaim:
@@ -88,9 +86,6 @@ spec:
           # Used to specify permissions on files within the volume.
           defaultMode: 420
       initContainers:
-{{- $credVolumeName := include "pegaInstallerCredentialsVolume" .root }}
-{{- $artifactoryCertVolumeName := include "pegaCustomArtifactoryCertificateTemplate" .root }}
-{{- include "jdbc-downloader-init-container" (merge .root (dict "credVolumeName" $credVolumeName "artifactoryCertVolumeName" $artifactoryCertVolumeName)) | indent 6 }}
 {{- range $i, $val := .initContainers }}
 {{ include $val $.root | indent 6 }}
 {{- end }}
@@ -118,7 +113,6 @@ spec:
           # CPU and Memory that the containers for {{ .name }} request
           {{- include "pegaInstallerResources" . | indent 10 }}
         volumeMounts:
-{{- include "jdbcLibVolumeMount" .root | indent 8 }}
 {{- if .root.Values.installerMountVolumeClaimName }}
         - name: {{ template "pegaInstallerMountVolume" }}
           mountPath: "/opt/pega/mount/installer"

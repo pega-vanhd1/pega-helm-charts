@@ -19,7 +19,6 @@ type pegaDbJob struct {
 }
 
 var volDefaultMode int32 = 420
-var customArtifactorySecret = "artifactory_secret"
 var volDefaultModePointer = &volDefaultMode
 
 func TestPegaInstallerJob(t *testing.T) {
@@ -47,7 +46,6 @@ func runPegaInstallerJobTest(t *testing.T, externalSecretName string) {
 							"global.deployment.name": depName,
 							"global.provider":        vendor,
 							"global.actions.execute": operation,
-							"global.customArtifactory.authentication.external_secret_name": customArtifactorySecret,
 							"installer.imagePullPolicy":                                    pullPolicy,
 							"installer.upgrade.upgradeType":                                "zero-downtime",
 							"installer.upgrade.pegaRESTUsername": "username",
@@ -165,12 +163,11 @@ func assertJob(t *testing.T, jobYaml string, expectedJob pegaDbJob, options *hel
 	require.Empty(t, jobSpec.Tolerations)
 	require.Equal(t, jobSpec.Volumes[0].Name, "pega-installer-credentials-volume")
 	require.Equal(t, jobSpec.Volumes[0].VolumeSource.Projected.Sources[0].Secret.Name, getObjName(options, "-db-secret"))
-	require.Equal(t, jobSpec.Volumes[0].VolumeSource.Projected.Sources[1].Secret.Name, customArtifactorySecret)
 
 	if externalSecretName == "" {
-	    require.Equal(t, jobSpec.Volumes[0].VolumeSource.Projected.Sources[2].Secret.Name, getObjName(options, "-upgrade-rest-secret"))
+	    require.Equal(t, jobSpec.Volumes[0].VolumeSource.Projected.Sources[1].Secret.Name, getObjName(options, "-upgrade-rest-secret"))
 	} else {
-	    require.Equal(t, jobSpec.Volumes[0].VolumeSource.Projected.Sources[2].Secret.Name, externalSecretName)
+	    require.Equal(t, jobSpec.Volumes[0].VolumeSource.Projected.Sources[1].Secret.Name, externalSecretName)
 	}
 
 	require.Equal(t, jobSpec.Volumes[0].VolumeSource.Projected.DefaultMode, volDefaultModePointer)

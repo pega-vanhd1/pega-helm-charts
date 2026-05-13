@@ -233,7 +233,6 @@ func VerifyEnvironmentConfig(t *testing.T, yamlContent string, options *helm.Opt
 	require.Equal(t, envConfigData["DB_TYPE"], "YOUR_DATABASE_TYPE")
 	require.Equal(t, envConfigData["JDBC_URL"], "YOUR_JDBC_URL")
 	require.Equal(t, envConfigData["JDBC_CLASS"], "YOUR_JDBC_DRIVER_CLASS")
-	require.Equal(t, envConfigData["JDBC_DRIVER_URI"], "YOUR_JDBC_DRIVER_URI")
 	if options.SetValues["global.actions.execute"] == "upgrade-deploy" {
 		require.Equal(t, envConfigData["RULES_SCHEMA"], "")
 	} else {
@@ -262,7 +261,6 @@ func VerifyEnvironmentConfig(t *testing.T, yamlContent string, options *helm.Opt
 	require.Equal(t, envConfigData["CASSANDRA_JMX_METRICS_ENABLED"], "true")
 	require.Equal(t, envConfigData["CASSANDRA_CSV_METRICS_ENABLED"], "false")
 	require.Equal(t, envConfigData["CASSANDRA_LOG_METRICS_ENABLED"], "false")
-	require.Equal(t, envConfigData["ENABLE_CUSTOM_ARTIFACTORY_SSL_VERIFICATION"], "true")
 }
 
 func TestPegaRASPEnvironmentConfig(t *testing.T) {

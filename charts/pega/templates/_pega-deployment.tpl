@@ -98,11 +98,6 @@ spec:
 {{ if or (.root.Values.global.certificates) (.root.Values.global.certificatesSecrets) }}
 {{- include "pegaImportCertificatesTemplate" .root | indent 6 }}
 {{ end }}
-{{ if (eq (include "customArtifactorySSLVerificationEnabled" .root) "true") }}
-{{- if .root.Values.global.customArtifactory.certificate }}
-{{- include "pegaCustomArtifactoryCertificateTemplate" .root | indent 6 }}
-{{- end }}
-{{- end }}
 {{- if ((.node.service).tls).enabled }}
 {{- $data := dict "root" .root "node" .node }}
 {{- include "pegaVolumeTomcatKeystoreTemplate" $data | indent 6 }}
@@ -308,12 +303,6 @@ spec:
         - name: {{ template "pegaVolumeTomcatKeystore" }}
           mountPath: "/opt/pega/tomcatcertsmount"
 {{ end }}
-{{ if (eq (include "customArtifactorySSLVerificationEnabled" .root) "true") }}
-{{- if .root.Values.global.customArtifactory.certificate }}
-        - name: {{ template "pegaVolumeCustomArtifactoryCertificate" }}
-          mountPath: "/opt/pega/artifactory/cert"
-{{- end }}
-{{- end }}
 {{- if .root.Values.global.kerberos }}
         - name: {{ template "pegaKerberosConfig" }}-config
           mountPath: "/opt/pega/kerberos"
